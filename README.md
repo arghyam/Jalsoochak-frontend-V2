@@ -1,1 +1,0 @@
-# Jalsoochak-frontend-V2

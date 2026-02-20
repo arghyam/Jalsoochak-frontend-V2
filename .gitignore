@@ -1,0 +1,4 @@
+# ai specific rules
+.cursor
+.claude
+.codex
