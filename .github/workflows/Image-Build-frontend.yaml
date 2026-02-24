@@ -41,7 +41,7 @@ jobs:
       - name: SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run:  npx sonar-scanner -Dsonar.projectKey=jalsoochak-frontend -Dsonar.organization=arghyam -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.qualitygate.wait=false
+        run:  npx sonar-scanner -Dsonar.projectKey=jalsoochak-frontend -Dsonar.organization=jalsoochak -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} -Dsonar.qualitygate.wait=false
         working-directory: frontend
         
       - name: Configure AWS credentials
@@ -67,3 +67,10 @@ jobs:
           docker push $ECR_REGISTRY/jalsoochak-frontend:$IMAGE_TAG
         working-directory: frontend
 
+  Deployment:
+    needs: Docker-Image-Build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    uses: arghyam/JalsoochakV2-Devops/.github/workflows/deploy.yaml@dev
+    with:
+      service_name: jalsoochak-frontend
+      image_tag: ${{ github.sha }}
