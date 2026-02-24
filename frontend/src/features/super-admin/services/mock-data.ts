@@ -2,7 +2,13 @@ import type { SuperAdminOverviewData } from '../types/overview'
 import type { SystemRulesConfiguration } from '../types/system-rules'
 import type { IngestionMonitorData } from '../types/ingestion-monitor'
 import type { ApiCredentialsData } from '../types/api-credentials'
-import type { StateUT, CreateStateUTInput, UpdateStateUTInput } from '../types/states-uts'
+import {
+  INDIAN_STATES_UTS,
+  type StateUT,
+  type CreateStateUTInput,
+  type UpdateStateUTInput,
+  type StateUTOption,
+} from '../types/states-uts'
 
 export const mockSuperAdminOverviewData: SuperAdminOverviewData = {
   stats: {
@@ -484,4 +490,12 @@ export const updateStateUTStatus = (
 
 export const getAssignedStateNames = (): string[] => {
   return mockStatesUTsData.map((s) => s.name)
+}
+
+export const getStateUTOptions = (): Promise<StateUTOption[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...INDIAN_STATES_UTS])
+    }, 300)
+  })
 }

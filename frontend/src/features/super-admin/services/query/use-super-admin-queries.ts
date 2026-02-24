@@ -92,6 +92,13 @@ export function useAssignedStateNamesQuery() {
   })
 }
 
+export function useStateUTOptionsQuery() {
+  return useQuery({
+    queryKey: superAdminQueryKeys.stateUTOptions(),
+    queryFn: superAdminApi.getStateUTOptions,
+  })
+}
+
 export function useCreateStateUTMutation() {
   const queryClient = useQueryClient()
   return useMutation({
@@ -99,6 +106,7 @@ export function useCreateStateUTMutation() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: superAdminQueryKeys.statesUTs() })
       await queryClient.invalidateQueries({ queryKey: superAdminQueryKeys.assignedStateNames() })
+      await queryClient.invalidateQueries({ queryKey: superAdminQueryKeys.stateUTOptions() })
     },
   })
 }
