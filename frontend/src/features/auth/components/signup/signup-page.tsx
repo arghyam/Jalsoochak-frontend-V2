@@ -11,15 +11,18 @@ import {
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 type SignupPageProps = {
-  onSuccess: () => void
+  onSuccess: (email: string) => void
 }
 
 export function SignupPage({ onSuccess }: SignupPageProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [userId, setUserId] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
   // Temporary hardcoded credentials until signup API is available.
   const HARD_CODED_USER = {
@@ -39,7 +42,7 @@ export function SignupPage({ onSuccess }: SignupPageProps) {
     }
 
     setIsSubmitting(true)
-    onSuccess()
+    onSuccess(email.trim())
   }
 
   return (
@@ -74,6 +77,37 @@ export function SignupPage({ onSuccess }: SignupPageProps) {
           fontSize="sm"
           focusBorderColor="primary.500"
         />
+      </FormControl>
+
+      <FormControl mt="1.5rem">
+        <FormLabel>
+          <Text textStyle="bodyText6" mb="4px" fontWeight="500">
+            Email address
+            <Text as="span" color="error.500">
+              *
+            </Text>
+          </Text>
+        </FormLabel>
+        <Input
+          type="email"
+          placeholder="Enter your email"
+          autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          h="36px"
+          px="12px"
+          py="8px"
+          borderRadius="4px"
+          borderColor="neutral.300"
+          _placeholder={{ color: 'neutral.300' }}
+          fontSize="sm"
+          focusBorderColor="primary.500"
+        />
+        {!isEmailValid && email ? (
+          <Text mt="6px" fontSize="sm" color="error.500">
+            Enter a valid email address.
+          </Text>
+        ) : null}
       </FormControl>
 
       <FormControl mt="1.5rem">
@@ -133,7 +167,7 @@ export function SignupPage({ onSuccess }: SignupPageProps) {
         mt="2rem"
         fontSize="16px"
         fontWeight="600"
-        isDisabled={!userId || !password || isSubmitting}
+        isDisabled={!userId || !email || !isEmailValid || !password || isSubmitting}
         isLoading={isSubmitting}
         loadingText="Signing up..."
         _loading={{ bg: 'primary.500', color: 'white' }}

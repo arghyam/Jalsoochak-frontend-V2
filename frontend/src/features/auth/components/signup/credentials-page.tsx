@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { Button, Flex, FormControl, FormLabel, Input, Text } from '@chakra-ui/react'
 import { ROUTES } from '@/shared/constants/routes'
 
-export function CredentialsPage() {
+type CredentialsPageProps = {
+  email: string
+}
+
+export function CredentialsPage({ email }: CredentialsPageProps) {
   const navigate = useNavigate()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -84,10 +87,10 @@ export function CredentialsPage() {
         </FormLabel>
         <Input
           type="email"
-          placeholder="Enter your user ID"
+          placeholder="Enter your email"
           autoComplete="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          isDisabled
           h="36px"
           px="12px"
           py="8px"
@@ -96,6 +99,7 @@ export function CredentialsPage() {
           _placeholder={{ color: 'neutral.300' }}
           fontSize="sm"
           focusBorderColor="primary.500"
+          _disabled={{ opacity: 1, cursor: 'not-allowed' }}
         />
         {!isEmailValid && email ? (
           <Text mt="6px" fontSize="sm" color="error.500">

@@ -1,6 +1,7 @@
 import { apiClient } from '@/shared/lib/axios'
 import {
   createStateUT,
+  createStateAdmin,
   generateApiKey,
   getAssignedStateNames,
   getStateUTOptions,
@@ -10,6 +11,7 @@ import {
   getMockSuperAdminOverviewData,
   getMockSystemRulesConfiguration,
   getStateUTById,
+  mockCreateTenant,
   saveMockSystemRulesConfiguration,
   sendApiKey,
   updateStateUT,
@@ -20,11 +22,15 @@ import type { IngestionMonitorData } from '../../types/ingestion-monitor'
 import type { SuperAdminOverviewData } from '../../types/overview'
 import type {
   CreateStateUTInput,
+  CreateTenantAdminApiResponse,
+  CreateTenantAdminRequest,
   StateUT,
   StateUTStatus,
   StateUTOption,
   UpdateStateUTInput,
+  StateAdminDetails,
 } from '../../types/states-uts'
+import type { CreateTenantInput, CreateTenantResponse } from '../../types/tenant'
 import type { SystemRulesConfiguration } from '../../types/system-rules'
 
 export type SaveSystemRulesPayload = Omit<SystemRulesConfiguration, 'id'>
@@ -50,6 +56,11 @@ type SuperAdminDataProvider = {
   updateStateUTStatus: (id: string, status: StateUTStatus) => Promise<StateUT>
   getAssignedStateNames: () => Promise<string[]>
   getStateUTOptions: () => Promise<StateUTOption[]>
+  createStateAdmin: (
+    tenantId: string,
+    admin: StateAdminDetails
+  ) => Promise<{ success: boolean } | CreateTenantAdminApiResponse>
+  createTenant: (payload: CreateTenantInput) => Promise<CreateTenantResponse['data']>
 }
 
 const httpProvider: SuperAdminDataProvider = {
@@ -130,6 +141,27 @@ const httpProvider: SuperAdminDataProvider = {
     const response = await apiClient.get<StateUTOption[]>('/api/super-admin/states-uts/options')
     return response.data
   },
+  createStateAdmin: async (tenantId: string, admin: StateAdminDetails) => {
+    const body: CreateTenantAdminRequest = {
+      firstName: admin.firstName,
+      lastName: admin.lastName,
+      primaryEmail: admin.email,
+      primaryPhone: admin.phone,
+      role: 'TENANT_ADMIN',
+    }
+    if (admin.secondaryEmail) body.secondaryEmail = admin.secondaryEmail
+    if (admin.contactNumber) body.secondaryPhone = admin.contactNumber
+    const response = await apiClient.post<CreateTenantAdminApiResponse>('/api/v2/users', body, {
+      headers: { 'X-Tenant-Id': tenantId },
+    })
+    return response.data
+  },
+  createTenant: async (payload: CreateTenantInput) => {
+    const response = await apiClient.post<CreateTenantResponse>('/api/v1/tenants', payload, {
+      headers: { 'X-Tenant-Code': payload.stateCode },
+    })
+    return response.data.data
+  },
 }
 
 const mockProvider: SuperAdminDataProvider = {
@@ -147,6 +179,9 @@ const mockProvider: SuperAdminDataProvider = {
   updateStateUTStatus: (id, status) => updateStateUTStatus(id, status),
   getAssignedStateNames: async () => getAssignedStateNames(),
   getStateUTOptions: () => getStateUTOptions(),
+  createStateAdmin: (tenantId: string, admin: StateAdminDetails) =>
+    createStateAdmin(tenantId, admin),
+  createTenant: (payload: CreateTenantInput) => mockCreateTenant(payload),
 }
 
 const SUPER_ADMIN_PROVIDER = import.meta.env.VITE_SUPER_ADMIN_DATA_PROVIDER ?? 'mock'
@@ -171,4 +206,7 @@ export const superAdminApi = {
     provider.updateStateUTStatus(id, status),
   getAssignedStateNames: () => provider.getAssignedStateNames(),
   getStateUTOptions: () => provider.getStateUTOptions(),
+  createStateAdmin: (tenantId: string, admin: StateAdminDetails) =>
+    provider.createStateAdmin(tenantId, admin),
+  createTenant: (payload: CreateTenantInput) => provider.createTenant(payload),
 }

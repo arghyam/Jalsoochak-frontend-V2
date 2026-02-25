@@ -1,7 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { superAdminApi, type SaveSystemRulesPayload } from '../api/super-admin-api'
 import { superAdminQueryKeys } from './super-admin-query-keys'
-import type { CreateStateUTInput, StateUTStatus, UpdateStateUTInput } from '../../types/states-uts'
+import type {
+  CreateStateUTInput,
+  StateUTStatus,
+  UpdateStateUTInput,
+  StateAdminDetails,
+} from '../../types/states-uts'
+import type { CreateTenantInput } from '../../types/tenant'
 import type { ApiCredentialsData } from '../../types/api-credentials'
 
 export function useSuperAdminOverviewQuery() {
@@ -108,6 +114,19 @@ export function useCreateStateUTMutation() {
       await queryClient.invalidateQueries({ queryKey: superAdminQueryKeys.assignedStateNames() })
       await queryClient.invalidateQueries({ queryKey: superAdminQueryKeys.stateUTOptions() })
     },
+  })
+}
+
+export function useCreateStateAdminMutation() {
+  return useMutation({
+    mutationFn: ({ tenantId, admin }: { tenantId: string; admin: StateAdminDetails }) =>
+      superAdminApi.createStateAdmin(tenantId, admin),
+  })
+}
+
+export function useCreateTenantMutation() {
+  return useMutation({
+    mutationFn: (payload: CreateTenantInput) => superAdminApi.createTenant(payload),
   })
 }
 

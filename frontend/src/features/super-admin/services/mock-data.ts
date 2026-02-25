@@ -8,7 +8,9 @@ import {
   type CreateStateUTInput,
   type UpdateStateUTInput,
   type StateUTOption,
+  type StateAdminDetails,
 } from '../types/states-uts'
+import type { CreateTenantInput, Tenant } from '../types/tenant'
 
 export const mockSuperAdminOverviewData: SuperAdminOverviewData = {
   stats: {
@@ -498,4 +500,32 @@ export const getStateUTOptions = (): Promise<StateUTOption[]> => {
       resolve([...INDIAN_STATES_UTS])
     }, 300)
   })
+}
+
+/** Dummy implementation until real create-admin API is available. */
+export const createStateAdmin = (
+  _tenantId: string,
+  _admin: StateAdminDetails
+): Promise<{ success: boolean }> => {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve({ success: true }), 300)
+  })
+}
+
+export function mockCreateTenant(payload: CreateTenantInput): Promise<Tenant> {
+  const now = new Date().toISOString()
+  const tenant: Tenant = {
+    id: 1,
+    uuid: `mock-${payload.stateCode.toLowerCase()}-${Date.now()}`,
+    stateCode: payload.stateCode,
+    lgdCode: payload.lgdCode,
+    name: payload.name,
+    status: 'ACTIVE',
+    createdAt: now,
+    createdBy: 'system',
+    onBoardedAt: now,
+    updatedAt: now,
+    updatedBy: 'system',
+  }
+  return Promise.resolve(tenant)
 }

@@ -14,10 +14,11 @@ import {
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 type CreatePasswordPageProps = {
+  email?: string
   onNext: () => void
 }
 
-export function CreatePasswordPage({ onNext }: CreatePasswordPageProps) {
+export function CreatePasswordPage({ email = '', onNext }: CreatePasswordPageProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [password, setPassword] = useState('')
@@ -44,6 +45,24 @@ export function CreatePasswordPage({ onNext }: CreatePasswordPageProps) {
       <Text textStyle="bodyText5" mb="20px">
         Enter a new password.
       </Text>
+
+      <FormControl mb="1.5rem">
+        <FormLabel textStyle="bodyText6" mb="4px">
+          Email address
+        </FormLabel>
+        <Input
+          type="email"
+          value={email}
+          isDisabled
+          h="36px"
+          px="12px"
+          py="8px"
+          borderRadius="4px"
+          borderColor="neutral.300"
+          fontSize="sm"
+          _disabled={{ opacity: 1, cursor: 'not-allowed' }}
+        />
+      </FormControl>
 
       <FormControl>
         <FormLabel textStyle="bodyText6" mb="4px" fontSize="16px">

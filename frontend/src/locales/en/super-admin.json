@@ -74,14 +74,19 @@
       "activated": "Activated"
     },
     "buttons": {
-      "addAndSendLink": "Add State & Send Link via Email"
+      "addAndSendLink": "Add State & Send Link via Email",
+      "backToList": "Back to States/UTs"
     },
     "messages": {
       "notFound": "State/UT not found",
       "noStatesFound": "No states/UTs found",
       "addedSuccess": "State/UT added successfully",
       "inviteSent": "Invite sent successfully",
+      "tenantCreatedSuccess": "Tenant created successfully",
+      "tenantNameLabel": "State/UT",
+      "adminInviteSent": "Admin invite will be sent.",
       "failedToAdd": "Failed to add State/UT",
+      "tenantCreatedAdminFailed": "Tenant created but admin creation failed",
       "failedToLoadAssignedStates": "Failed to load assigned states. Please refresh and try again.",
       "failedToLoadStateOptions": "Failed to load state/UT options. Please refresh and try again.",
       "activatedSuccess": "State/UT activated successfully",

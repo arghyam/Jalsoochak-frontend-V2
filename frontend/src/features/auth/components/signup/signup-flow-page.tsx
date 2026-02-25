@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Box, Flex, Image } from '@chakra-ui/react'
 import jalsoochakLogo from '@/assets/media/jalsoochak-logo.svg'
 import { AuthSideImage } from '@/features/auth/components/signup/auth-side-image'
@@ -17,6 +17,8 @@ type SignupFlowPageProps = {
 export function SignupFlowPage({ initialStep = 'signup' }: SignupFlowPageProps) {
   const [step, setStep] = useState<SignupStep>(initialStep)
   const navigate = useNavigate()
+  const location = useLocation()
+  const email = (location.state as { email?: string } | null)?.email
 
   useEffect(() => {
     setStep(initialStep)
@@ -27,14 +29,21 @@ export function SignupFlowPage({ initialStep = 'signup' }: SignupFlowPageProps) 
 
   const renderStep = () => {
     if (step === 'createPassword') {
-      return <CreatePasswordPage onNext={() => navigate(ROUTES.CREDENTIALS)} />
+      return (
+        <CreatePasswordPage
+          email={email ?? ''}
+          onNext={() => navigate(ROUTES.CREDENTIALS, { state: { email } })}
+        />
+      )
     }
 
     if (step === 'credentials') {
-      return <CredentialsPage />
+      return <CredentialsPage email={email ?? ''} />
     }
 
-    return <SignupPage onSuccess={() => navigate(ROUTES.CREATE_PASSWORD)} />
+    return (
+      <SignupPage onSuccess={(email) => navigate(ROUTES.CREATE_PASSWORD, { state: { email } })} />
+    )
   }
 
   return (
