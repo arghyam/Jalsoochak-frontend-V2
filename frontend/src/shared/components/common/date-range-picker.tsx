@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react'
 import type { ResponsiveValue } from '@chakra-ui/react'
 import type { Property } from 'csstype'
-import { MdOutlineCalendarToday } from 'react-icons/md'
+import { CalenderIcon } from './calender-icon'
 
 export type DateRange = {
   startDate: string
@@ -317,7 +317,7 @@ export function DateRangePicker({
           >
             {displayLabel}
           </Text>
-          <Box as={MdOutlineCalendarToday} boxSize={4} color="neutral.500" />
+          <CalenderIcon boxSize="16px" />
         </Flex>
       </PopoverTrigger>
       <PopoverContent w={{ base: 'full', md: '420px' }} borderColor="neutral.100" boxShadow="md">

@@ -10,6 +10,7 @@ interface SearchLayoutProps {
   onActionClick?: () => void
   inputProps?: InputProps
   actionProps?: ButtonProps
+  filterSlot?: ReactNode
   rightSlot?: ReactNode
 }
 
@@ -19,42 +20,47 @@ export function SearchLayout({
   onActionClick,
   inputProps,
   actionProps,
+  filterSlot,
   rightSlot,
 }: SearchLayoutProps) {
   return (
     <Flex
       as="section"
       w="full"
-      align="center"
+      align={{ base: 'stretch', lg: 'center' }}
+      justify="space-between"
       borderRadius="12px"
       p="16px"
       bg="neutral.25"
-      gap={4}
+      gap="24px"
       border="0.5px solid"
       borderColor="neutral.200"
-      direction={{ base: 'column', sm: 'row' }}
-      alignItems={{ base: 'stretch', sm: 'center' }}
+      direction={{ base: 'column', lg: 'row' }}
     >
-      <InputGroup flex="1">
-        <InputLeftElement pointerEvents="none" p="12px" w="auto" h="32px" alignItems="center">
-          <SearchIcon mr="4px" color="neutral.300" />
-        </InputLeftElement>
-        <Input
-          px="12px"
-          pl="32px"
-          placeholder={placeholder}
-          fontSize="14px"
-          h="32px"
-          borderColor="neutral.300"
-          _placeholder={{ color: 'neutral.300' }}
-          {...inputProps}
-        />
-      </InputGroup>
+      <Flex w="full" maxW="1064px" align={{ base: 'stretch', lg: 'center' }} gap={3} wrap="wrap">
+        <InputGroup w="full" maxW={{ base: 'full', lg: '782px' }} minW={0}>
+          <InputLeftElement pointerEvents="none" p="12px" w="auto" h="32px" alignItems="center">
+            <SearchIcon mr="4px" color="neutral.300" />
+          </InputLeftElement>
+          <Input
+            px="12px"
+            pl="32px"
+            placeholder={placeholder}
+            fontSize="14px"
+            h="32px"
+            borderColor="neutral.300"
+            _placeholder={{ color: 'neutral.300' }}
+            {...inputProps}
+          />
+        </InputGroup>
+        {filterSlot}
+      </Flex>
       {rightSlot ?? (
         <Button
           onClick={onActionClick}
           h="32px"
-          w={{ base: 'full', sm: '160px' }}
+          w={{ base: 'full', lg: '160px' }}
+          minW={{ lg: '160px' }}
           fontSize="14px"
           variant="primary"
           leftIcon={<FiDownload size="16" />}
