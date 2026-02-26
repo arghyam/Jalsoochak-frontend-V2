@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import { describe, expect, it, jest } from '@jest/globals'
 import type { SearchableSelectOption } from '@/shared/components/common'
 import { renderWithProviders } from '@/test/render-with-providers'
@@ -51,7 +51,9 @@ describe('DashboardFilters', () => {
       />
     )
 
-    const durationButton = screen.getByRole('button', { name: 'Duration' }) as HTMLButtonElement
-    expect(durationButton.disabled).toBe(false)
+    const durationButton = screen.getByRole('button', { name: 'Duration' })
+    fireEvent.click(durationButton)
+
+    expect(screen.getByText('Quick ranges')).toBeTruthy()
   })
 })

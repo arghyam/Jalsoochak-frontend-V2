@@ -134,7 +134,7 @@ export function DashboardFilters({
               _hover={{ textDecoration: 'underline', textDecorationColor: 'neutral.300' }}
             >
               <Text textStyle="h10" fontWeight="600" color="neutral.300">
-                clear all filters
+                Clear all filters
               </Text>
             </Button>
           </Flex>

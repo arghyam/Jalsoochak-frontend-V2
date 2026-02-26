@@ -1,7 +1,7 @@
 import { Icon } from '@chakra-ui/react'
 import type { IconProps } from '@chakra-ui/react'
 
-export function CalenderIcon(props: IconProps) {
+export function CalendarIcon(props: IconProps) {
   return (
     <Icon viewBox="0 0 16 16" fill="none" {...props}>
       <path

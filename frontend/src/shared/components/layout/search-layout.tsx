@@ -131,8 +131,12 @@ export function SearchLayout({
         gap="24px"
         direction={{ base: 'column', lg: 'row' }}
       >
-        <Flex w="full" maxW="1064px" align={{ base: 'stretch', lg: 'center' }} gap={3} wrap="wrap">
-          <InputGroup w="full" maxW={{ base: 'full', lg: '782px' }} minW={0}>
+        <Flex w="full" flex="1" maxW="none" gap={3} wrap={{ base: 'wrap' }}>
+          <InputGroup
+            w={{ base: 'full', lg: '782px' }}
+            maxW={{ base: 'full', lg: '782px' }}
+            minW={0}
+          >
             <InputLeftElement pointerEvents="none" p="12px" w="auto" h="32px" alignItems="center">
               <SearchIcon mr="4px" color="neutral.300" />
             </InputLeftElement>
