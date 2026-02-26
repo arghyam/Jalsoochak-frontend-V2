@@ -91,6 +91,16 @@ export interface DashboardData {
   bottomPumpOperators?: PumpOperatorPerformanceData[]
 }
 
+export interface StateUtOption {
+  value: string
+  label: string
+}
+
+export interface StateUtSearchResponse {
+  totalStatesCount: number
+  states: StateUtOption[]
+}
+
 // For map hover/click interactions
 export interface MapInteraction {
   entityId: string

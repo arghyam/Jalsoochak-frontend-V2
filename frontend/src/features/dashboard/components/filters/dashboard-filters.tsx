@@ -3,6 +3,7 @@ import { Button, Flex, Text } from '@chakra-ui/react'
 import { DateRangePicker, SearchableSelect } from '@/shared/components/common'
 import type { DateRange, SearchableSelectOption } from '@/shared/components/common'
 import { FilterLayout, SearchLayout } from '@/shared/components/layout'
+import { useLocationSearchQuery } from '../../services/query/use-location-search-query'
 
 type DashboardFiltersProps = {
   filterTabIndex: number
@@ -85,9 +86,32 @@ export function DashboardFilters({
   setSelectedDepartmentSubdivision,
   setSelectedDepartmentVillage,
 }: DashboardFiltersProps) {
+  const { data: locationSearchData } = useLocationSearchQuery()
+  const breadcrumbStateOptions = locationSearchData?.states ?? [
+    { value: 'telangana', label: 'Telangana' },
+  ]
+  const totalStatesCount = locationSearchData?.totalStatesCount ?? 36
+  const findLabel = (value: string, options: SearchableSelectOption[]): string | null => {
+    if (!value) return null
+    return options.find((option) => option.value === value)?.label ?? null
+  }
+  const selectionTrail = [
+    findLabel(selectedState, breadcrumbStateOptions),
+    findLabel(selectedDistrict, districtOptions),
+    findLabel(selectedBlock, blockOptions),
+    findLabel(selectedGramPanchayat, gramPanchayatOptions),
+    findLabel(selectedVillage, villageOptions),
+  ].filter((item): item is string => Boolean(item))
+
   return (
     <>
       <SearchLayout
+        selectionTrail={selectionTrail}
+        breadcrumbPanelProps={{
+          stateOptions: breadcrumbStateOptions,
+          totalStatesCount,
+          onStateSelect: onStateChange,
+        }}
         filterSlot={
           <Flex align="center" gap={3} wrap="wrap">
             <DateRangePicker
