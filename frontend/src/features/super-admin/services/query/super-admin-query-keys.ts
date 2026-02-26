@@ -9,4 +9,5 @@ export const superAdminQueryKeys = {
   statesUTs: () => [...superAdminQueryKeys.all, 'states-uts'] as const,
   stateUTById: (id: string) => [...superAdminQueryKeys.statesUTs(), id] as const,
   assignedStateNames: () => [...superAdminQueryKeys.statesUTs(), 'assigned-state-names'] as const,
+  stateUTOptions: () => [...superAdminQueryKeys.statesUTs(), 'options'] as const,
 }

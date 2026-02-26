@@ -25,6 +25,11 @@ export interface CreateStateUTInput {
   admin: StateAdminDetails
 }
 
+export interface StateUTOption {
+  name: string
+  code: string
+}
+
 export interface UpdateStateUTInput {
   admin: Omit<StateAdminDetails, 'email'> & { email?: string }
 }

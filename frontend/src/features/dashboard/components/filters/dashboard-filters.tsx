@@ -1,7 +1,9 @@
 import type { Dispatch, SetStateAction } from 'react'
+import { Button, Flex, Text } from '@chakra-ui/react'
 import { DateRangePicker, SearchableSelect } from '@/shared/components/common'
 import type { DateRange, SearchableSelectOption } from '@/shared/components/common'
 import { FilterLayout, SearchLayout } from '@/shared/components/layout'
+import { useLocationSearchQuery } from '../../services/query/use-location-search-query'
 
 type DashboardFiltersProps = {
   filterTabIndex: number
@@ -84,10 +86,61 @@ export function DashboardFilters({
   setSelectedDepartmentSubdivision,
   setSelectedDepartmentVillage,
 }: DashboardFiltersProps) {
+  const { data: locationSearchData } = useLocationSearchQuery()
+  const breadcrumbStateOptions = locationSearchData?.states ?? [
+    { value: 'telangana', label: 'Telangana' },
+  ]
+  const totalStatesCount = locationSearchData?.totalStatesCount ?? 36
+  const findLabel = (value: string, options: SearchableSelectOption[]): string | null => {
+    if (!value) return null
+    return options.find((option) => option.value === value)?.label ?? null
+  }
+  const selectionTrail = [
+    findLabel(selectedState, breadcrumbStateOptions),
+    findLabel(selectedDistrict, districtOptions),
+    findLabel(selectedBlock, blockOptions),
+    findLabel(selectedGramPanchayat, gramPanchayatOptions),
+    findLabel(selectedVillage, villageOptions),
+  ].filter((item): item is string => Boolean(item))
+
   return (
     <>
-      <SearchLayout />
-      <FilterLayout onClear={onClear} activeTab={filterTabIndex} onTabChange={onTabChange}>
+      <SearchLayout
+        selectionTrail={selectionTrail}
+        breadcrumbPanelProps={{
+          stateOptions: breadcrumbStateOptions,
+          totalStatesCount,
+          onStateSelect: onStateChange,
+        }}
+        filterSlot={
+          <Flex align="center" gap={3} wrap="wrap">
+            <DateRangePicker
+              value={selectedDuration}
+              onChange={setSelectedDuration}
+              placeholder="Duration"
+              width="160px"
+              height="32px"
+              borderRadius="4px"
+              fontSize="sm"
+              textColor="neutral.300"
+              borderColor="neutral.300"
+              disabled={false}
+              isFilter={true}
+            />
+            <Button
+              variant="link"
+              size="sm"
+              onClick={onClear}
+              _hover={{ textDecoration: 'underline', textDecorationColor: 'neutral.300' }}
+            >
+              <Text textStyle="h10" fontWeight="600" color="neutral.300">
+                Clear all filters
+              </Text>
+            </Button>
+          </Flex>
+        }
+      />
+      <FilterLayout activeTab={filterTabIndex} onTabChange={onTabChange} rightSlot={<></>}>
         {filterTabIndex === 0 ? (
           <>
             <SearchableSelect
@@ -196,26 +249,6 @@ export function DashboardFilters({
               value={selectedScheme}
               onChange={setSelectedScheme}
               placeholder="Scheme"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              borderColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              disabled={!isAdvancedEnabled}
-              isFilter={true}
-            />
-
-            <DateRangePicker
-              value={selectedDuration}
-              onChange={setSelectedDuration}
-              placeholder="Duration"
               width={{
                 base: '100%',
                 sm: 'calc(50% - 12px)',

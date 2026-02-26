@@ -17,11 +17,10 @@ import {
 import { useTranslation } from 'react-i18next'
 import { SearchableSelect, ToastContainer } from '@/shared/components/common'
 import { useToast } from '@/shared/hooks/use-toast'
-import { INDIAN_STATES_UTS } from '../../types/states-uts'
 import { ROUTES } from '@/shared/constants/routes'
 import {
-  useAssignedStateNamesQuery,
   useCreateStateUTMutation,
+  useStateUTOptionsQuery,
 } from '../../services/query/use-super-admin-queries'
 
 export function AddStateUTPage() {
@@ -34,10 +33,10 @@ export function AddStateUTPage() {
   }, [t])
 
   const {
-    data: assignedStates = [],
-    isLoading: isAssignedStatesLoading,
-    isError: isAssignedStatesError,
-  } = useAssignedStateNamesQuery()
+    data: stateUTOptions = [],
+    isLoading: isStateUTOptionsLoading,
+    isError: isStateUTOptionsError,
+  } = useStateUTOptionsQuery()
   const createStateMutation = useCreateStateUTMutation()
 
   // Form state
@@ -50,20 +49,16 @@ export function AddStateUTPage() {
   const [secondaryEmail, setSecondaryEmail] = useState('')
   const [contactNumber, setContactNumber] = useState('')
 
-  // Filter available states (exclude already assigned)
   const availableStates = useMemo(() => {
-    return INDIAN_STATES_UTS.filter((state) => !assignedStates.includes(state.name)).map(
-      (state) => ({
-        value: state.name,
-        label: state.name,
-      })
-    )
-  }, [assignedStates])
+    return stateUTOptions.map((state) => ({
+      value: state.name,
+      label: state.name,
+    }))
+  }, [stateUTOptions])
 
-  // Auto-fill state code when state is selected
   const handleStateChange = (value: string) => {
     setStateName(value)
-    const selectedState = INDIAN_STATES_UTS.find((s) => s.name === value)
+    const selectedState = stateUTOptions.find((s) => s.name === value)
     setStateCode(selectedState?.code ?? '')
   }
 
@@ -121,11 +116,10 @@ export function AddStateUTPage() {
           contactNumber: contactNumber.trim() || undefined,
         },
       })
-      toast.addToast(t('statesUts.messages.addedSuccess'), 'success')
-      // Navigate to view page after short delay to show toast
+      toast.addToast(t('statesUts.messages.inviteSent'), 'success')
       setTimeout(() => {
         navigate(ROUTES.SUPER_ADMIN_STATES_UTS_VIEW.replace(':id', newState.id))
-      }, 500)
+      }, 1000)
     } catch (error) {
       console.error('Failed to create state:', error)
       toast.addToast(t('statesUts.messages.failedToAdd'), 'error')
@@ -163,10 +157,10 @@ export function AddStateUTPage() {
       </Box>
 
       {/* Assigned states fetch error */}
-      {isAssignedStatesError && (
+      {isStateUTOptionsError && (
         <Alert status="error" borderRadius="8px" mb={4}>
           <AlertIcon />
-          {t('statesUts.messages.failedToLoadAssignedStates')}
+          {t('statesUts.messages.failedToLoadStateOptions')}
         </Alert>
       )}
 
@@ -217,7 +211,7 @@ export function AddStateUTPage() {
                   placeholder={t('common:select')}
                   placeholderColor="neutral.300"
                   width={{ base: '100%', xl: '486px' }}
-                  disabled={isAssignedStatesLoading || isAssignedStatesError}
+                  disabled={isStateUTOptionsLoading || isStateUTOptionsError}
                 />
               </FormControl>
               <FormControl>

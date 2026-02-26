@@ -3,6 +3,7 @@ import {
   createStateUT,
   generateApiKey,
   getAssignedStateNames,
+  getStateUTOptions,
   getMockApiCredentialsData,
   getMockIngestionMonitorData,
   getMockStatesUTsData,
@@ -21,6 +22,7 @@ import type {
   CreateStateUTInput,
   StateUT,
   StateUTStatus,
+  StateUTOption,
   UpdateStateUTInput,
 } from '../../types/states-uts'
 import type { SystemRulesConfiguration } from '../../types/system-rules'
@@ -47,6 +49,7 @@ type SuperAdminDataProvider = {
   updateStateUT: (id: string, payload: UpdateStateUTInput) => Promise<StateUT>
   updateStateUTStatus: (id: string, status: StateUTStatus) => Promise<StateUT>
   getAssignedStateNames: () => Promise<string[]>
+  getStateUTOptions: () => Promise<StateUTOption[]>
 }
 
 const httpProvider: SuperAdminDataProvider = {
@@ -123,6 +126,10 @@ const httpProvider: SuperAdminDataProvider = {
     )
     return response.data
   },
+  getStateUTOptions: async () => {
+    const response = await apiClient.get<StateUTOption[]>('/api/super-admin/states-uts/options')
+    return response.data
+  },
 }
 
 const mockProvider: SuperAdminDataProvider = {
@@ -139,6 +146,7 @@ const mockProvider: SuperAdminDataProvider = {
   updateStateUT: (id, payload) => updateStateUT(id, payload),
   updateStateUTStatus: (id, status) => updateStateUTStatus(id, status),
   getAssignedStateNames: async () => getAssignedStateNames(),
+  getStateUTOptions: () => getStateUTOptions(),
 }
 
 const SUPER_ADMIN_PROVIDER = import.meta.env.VITE_SUPER_ADMIN_DATA_PROVIDER ?? 'mock'
@@ -162,4 +170,5 @@ export const superAdminApi = {
   updateStateUTStatus: (id: string, status: StateUTStatus) =>
     provider.updateStateUTStatus(id, status),
   getAssignedStateNames: () => provider.getAssignedStateNames(),
+  getStateUTOptions: () => provider.getStateUTOptions(),
 }
