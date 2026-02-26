@@ -1,33 +1,40 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, Flex, FormControl, FormLabel, Input, Text } from '@chakra-ui/react'
+import {
+  Button,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Text,
+} from '@chakra-ui/react'
 import { ROUTES } from '@/shared/constants/routes'
 
 type CredentialsPageProps = {
   email: string
 }
 
-export function CredentialsPage({ email }: CredentialsPageProps) {
+export function CredentialsPage({ email: _email }: CredentialsPageProps) {
   const navigate = useNavigate()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
   const isPhoneValid = /^\d{10}$/.test(phoneNumber)
-  const canSubmit = firstName && isEmailValid && isPhoneValid
+  const canSubmit = firstName && isPhoneValid
 
   return (
     <>
-      <Text textStyle="h5" mb={3} fontWeight="600">
-        Profile
+      <Text textStyle="h5" fontWeight="600" mb="0.25rem">
+        Profile Details
       </Text>
-      <Text textStyle="bodyText5" mb="2rem" fontWeight="400">
+      <Text textStyle="bodyText5" fontWeight="400" mb="1.25rem">
         Complete your profile information.
       </Text>
 
-      <Flex gap="1rem" mb="1.5rem">
+      <Flex gap="1rem" mb="1rem">
         <FormControl>
           <FormLabel>
             <Text textStyle="bodyText6" mb="4px">
@@ -76,39 +83,7 @@ export function CredentialsPage({ email }: CredentialsPageProps) {
         </FormControl>
       </Flex>
 
-      <FormControl mb="1.5rem">
-        <FormLabel>
-          <Text textStyle="bodyText6" mb="4px">
-            Email address
-            <Text as="span" color="error.500">
-              *
-            </Text>
-          </Text>
-        </FormLabel>
-        <Input
-          type="email"
-          placeholder="Enter your email"
-          autoComplete="email"
-          value={email}
-          isDisabled
-          h="36px"
-          px="12px"
-          py="8px"
-          borderRadius="4px"
-          borderColor="neutral.300"
-          _placeholder={{ color: 'neutral.300' }}
-          fontSize="sm"
-          focusBorderColor="primary.500"
-          _disabled={{ opacity: 1, cursor: 'not-allowed' }}
-        />
-        {!isEmailValid && email ? (
-          <Text mt="6px" fontSize="sm" color="error.500">
-            Enter a valid email address.
-          </Text>
-        ) : null}
-      </FormControl>
-
-      <FormControl>
+      <FormControl mb="1.25rem" isInvalid={!isPhoneValid && !!phoneNumber}>
         <FormLabel>
           <Text textStyle="bodyText6" mb="4px">
             Phone Number
@@ -135,16 +110,11 @@ export function CredentialsPage({ email }: CredentialsPageProps) {
           fontSize="sm"
           focusBorderColor="primary.500"
         />
-        {!isPhoneValid && phoneNumber ? (
-          <Text mt="6px" fontSize="sm" color="error.500">
-            Phone number must be 10 digits.
-          </Text>
-        ) : null}
+        <FormErrorMessage>Phone number must be 10 digits.</FormErrorMessage>
       </FormControl>
 
       <Button
         w="full"
-        mt="2rem"
         fontSize="16px"
         fontWeight="600"
         isDisabled={!canSubmit || isSubmitting}

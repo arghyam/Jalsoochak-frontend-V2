@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   InputGroup,
@@ -39,16 +40,18 @@ export function CreatePasswordPage({ email = '', onNext }: CreatePasswordPagePro
 
   return (
     <>
-      <Text textStyle="h5" mb={3}>
-        Create password
+      <Text textStyle="h5" fontWeight="600" mb="0.25rem">
+        Sign up
       </Text>
-      <Text textStyle="bodyText5" mb="20px">
-        Enter a new password.
+      <Text textStyle="bodyText5" fontWeight="400" mb="1.25rem">
+        Create a password to proceed further.
       </Text>
 
-      <FormControl mb="1.5rem">
-        <FormLabel textStyle="bodyText6" mb="4px">
-          Email address
+      <FormControl mb="1rem">
+        <FormLabel>
+          <Text textStyle="bodyText6" mb="4px">
+            Email address
+          </Text>
         </FormLabel>
         <Input
           type="email"
@@ -60,15 +63,17 @@ export function CreatePasswordPage({ email = '', onNext }: CreatePasswordPagePro
           borderRadius="4px"
           borderColor="neutral.300"
           fontSize="sm"
-          _disabled={{ opacity: 1, cursor: 'not-allowed' }}
+          _disabled={{ opacity: 1, cursor: 'not-allowed', bg: 'neutral.300' }}
         />
       </FormControl>
 
-      <FormControl>
-        <FormLabel textStyle="bodyText6" mb="4px" fontSize="16px">
-          Create new password
-          <Text as="span" color="error.500">
-            *
+      <FormControl mt="1rem" mb="1rem">
+        <FormLabel>
+          <Text textStyle="bodyText6" mb="4px">
+            Create password
+            <Text as="span" color="error.500">
+              *
+            </Text>
           </Text>
         </FormLabel>
         <InputGroup>
@@ -107,11 +112,13 @@ export function CreatePasswordPage({ email = '', onNext }: CreatePasswordPagePro
         </InputGroup>
       </FormControl>
 
-      <FormControl mt="1.5rem">
-        <FormLabel textStyle="bodyText6" mb="4px">
-          Rewrite password
-          <Text as="span" color="error.500">
-            *
+      <FormControl mt="1rem" mb="1rem" isInvalid={!isPasswordMatch && !!confirmPassword}>
+        <FormLabel>
+          <Text textStyle="bodyText6" mb="4px">
+            Rewrite password
+            <Text as="span" color="error.500">
+              *
+            </Text>
           </Text>
         </FormLabel>
         <InputGroup>
@@ -152,15 +159,11 @@ export function CreatePasswordPage({ email = '', onNext }: CreatePasswordPagePro
             </Button>
           </InputRightElement>
         </InputGroup>
-        {!isPasswordMatch && confirmPassword ? (
-          <Text mt="6px" fontSize="sm" color="error.500">
-            Passwords do not match.
-          </Text>
-        ) : null}
+        <FormErrorMessage>Passwords do not match.</FormErrorMessage>
       </FormControl>
 
       {password.length > 0 && !isPasswordValid ? (
-        <List mt="10px" spacing="0.5px" fontSize="sm" color="error.500" pl="18px" styleType="disc">
+        <List mt="1rem" spacing="0.5px" fontSize="sm" color="error.500" pl="18px" styleType="disc">
           <ListItem>Include at least 1 lowercase letter.</ListItem>
           <ListItem>Include at least 1 uppercase letter.</ListItem>
           <ListItem>Include at least 1 number.</ListItem>
@@ -170,7 +173,7 @@ export function CreatePasswordPage({ email = '', onNext }: CreatePasswordPagePro
       ) : null}
 
       <Checkbox
-        mt="1.25rem"
+        mt="1rem"
         isChecked={rememberMe}
         onChange={(e) => setRememberMe(e.target.checked)}
         sx={{

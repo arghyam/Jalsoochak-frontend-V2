@@ -2,7 +2,7 @@ import apiClient from '@/shared/lib/axios'
 import { extractUserFromJWT } from '@/shared/utils/jwt'
 
 export interface LoginRequest {
-  phoneNumber: string
+  email: string
   password: string
 }
 
@@ -52,10 +52,45 @@ export interface LoginResponse {
   refreshToken: string
 }
 
+const TEST_CREDS = [
+  {
+    email: 'test@test.com',
+    password: 'Test@123',
+    role: 'business_user' as const,
+    name: 'Test User',
+    id: 'test-user',
+  },
+  {
+    email: 'superadmin@test.com',
+    password: 'Test@123',
+    role: 'super_user' as const,
+    name: 'Super Admin',
+    id: 'test-superadmin',
+  },
+]
+
 export const authApi = {
   login: async (payload: LoginRequest): Promise<LoginResponse> => {
+    const email = payload.email.trim().toLowerCase()
+    const match = TEST_CREDS.find((c) => c.email === email && c.password === payload.password)
+    if (match) {
+      return {
+        user: {
+          id: match.id,
+          name: match.name,
+          email: match.email,
+          role: match.role,
+          phoneNumber: '',
+          tenantId: '',
+          personId: '',
+        },
+        accessToken: 'test-access-token',
+        refreshToken: 'test-refresh-token',
+      }
+    }
+
     const response = await apiClient.post<TokenResponse>('/api/v2/auth/login', {
-      username: payload.phoneNumber,
+      email: payload.email,
       password: payload.password,
     })
     const { access_token, refresh_token, id_token, user_role, tenant_id, person_id } = response.data

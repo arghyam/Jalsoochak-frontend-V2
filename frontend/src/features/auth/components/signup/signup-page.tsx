@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   InputGroup,
@@ -47,16 +48,16 @@ export function SignupPage({ onSuccess }: SignupPageProps) {
 
   return (
     <>
-      <Text textStyle="h5" mb={3}>
+      <Text textStyle="h5" fontWeight="600" mb="0.25rem">
         Welcome
       </Text>
-      <Text textStyle="bodyText5" mb="3rem" fontWeight="400">
+      <Text textStyle="bodyText5" fontWeight="400" mb="1.25rem">
         Please enter your details.
       </Text>
 
       <FormControl>
         <FormLabel>
-          <Text textStyle="bodyText6" mb="4px" fontWeight="500">
+          <Text textStyle="bodyText6" mb="4px">
             User ID
             <Text as="span" color="error.500">
               *
@@ -79,9 +80,9 @@ export function SignupPage({ onSuccess }: SignupPageProps) {
         />
       </FormControl>
 
-      <FormControl mt="1.5rem">
+      <FormControl mt="1rem" isInvalid={!isEmailValid && !!email}>
         <FormLabel>
-          <Text textStyle="bodyText6" mb="4px" fontWeight="500">
+          <Text textStyle="bodyText6" mb="4px">
             Email address
             <Text as="span" color="error.500">
               *
@@ -103,23 +104,18 @@ export function SignupPage({ onSuccess }: SignupPageProps) {
           fontSize="sm"
           focusBorderColor="primary.500"
         />
-        {!isEmailValid && email ? (
-          <Text mt="6px" fontSize="sm" color="error.500">
-            Enter a valid email address.
-          </Text>
-        ) : null}
+        <FormErrorMessage>Enter a valid email address.</FormErrorMessage>
       </FormControl>
 
-      <FormControl mt="1.5rem">
+      <FormControl mt="1rem">
         <FormLabel>
-          <Text textStyle="bodyText6" mb="4px" fontWeight="500">
+          <Text textStyle="bodyText6" mb="4px">
             Password sent via email
             <Text as="span" color="error.500">
               *
             </Text>
           </Text>
         </FormLabel>
-
         <InputGroup>
           <Input
             type={showPassword ? 'text' : 'password'}
@@ -156,15 +152,13 @@ export function SignupPage({ onSuccess }: SignupPageProps) {
         </InputGroup>
       </FormControl>
 
-      {authError ? (
-        <Text mt="12px" fontSize="sm" color="error.500">
-          {authError}
-        </Text>
-      ) : null}
+      <FormControl mt="1rem" isInvalid={!!authError}>
+        <FormErrorMessage>{authError}</FormErrorMessage>
+      </FormControl>
 
       <Button
         w="full"
-        mt="2rem"
+        mt="1.25rem"
         fontSize="16px"
         fontWeight="600"
         isDisabled={!userId || !email || !isEmailValid || !password || isSubmitting}
