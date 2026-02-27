@@ -13,6 +13,7 @@ import waterTapIcon from '@/assets/media/water-tap_1822589 1.svg'
 import type { DateRange, SearchableSelectOption } from '@/shared/components/common'
 import type { EntityPerformance } from '../types'
 import { DashboardFilters } from './filters/dashboard-filters'
+import { AllStatesTable } from './tables'
 import {
   mockFilterStates,
   mockFilterDistricts,
@@ -456,7 +457,7 @@ export function CentralDashboard() {
           pl="16px"
           pr="16px"
           w="full"
-          h="731px"
+          h="710px"
         >
           <IndiaMapChart
             data={data.mapData}
@@ -599,46 +600,12 @@ export function CentralDashboard() {
             pl="16px"
             pr="16px"
             w="full"
-            h="731px"
+            h="710px"
           >
             <Text textStyle="bodyText3" fontWeight="400" mb={4}>
-              Core Metrics
+              Overall Performance
             </Text>
-            <Flex direction="column" gap="16px">
-              {coreMetrics.map((metric) => {
-                const isPositive = metric.trend.direction === 'up'
-                const TrendIcon = isPositive ? MdArrowUpward : MdArrowDownward
-                const trendColor = isPositive ? '#079455' : '#D92D20'
-
-                return (
-                  <Box key={metric.label} bg="#FAFAFA" borderRadius="8px" px="16px" py="24px">
-                    <Flex direction="column" align="center" gap="4px" h="92px" w="full">
-                      <Flex align="center" justify="center" w="full" position="relative">
-                        <Text textStyle="bodyText4" fontWeight="400" color="neutral.600">
-                          {metric.label}
-                        </Text>
-                        <Icon
-                          as={AiOutlineInfoCircle}
-                          boxSize="16px"
-                          color="neutral.400"
-                          position="absolute"
-                          right="0"
-                        />
-                      </Flex>
-                      <Text textStyle="bodyText2" fontWeight="400" color="neutral.900">
-                        {metric.value}
-                      </Text>
-                      <Flex align="center" gap={1}>
-                        <Icon as={TrendIcon} boxSize="16px" color={trendColor} />
-                        <Text textStyle="bodyText4" fontWeight="400" color={trendColor}>
-                          {metric.trend.text}
-                        </Text>
-                      </Flex>
-                    </Flex>
-                  </Box>
-                )
-              })}
-            </Flex>
+            <AllStatesTable data={data.mapData} scrollMaxHeight="620px" />
           </Box>
         )}
       </Grid>
