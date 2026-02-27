@@ -11,6 +11,9 @@ import {
   Text,
   Icon,
   useOutsideClick,
+  Tabs,
+  TabList,
+  Tab,
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
 import { FiChevronDown, FiDownload } from 'react-icons/fi'
@@ -24,6 +27,16 @@ interface BreadcrumbPanelProps {
   stateOptions: SearchStateOption[]
   totalStatesCount: number
   onStateSelect?: (stateValue: string) => void
+  options?: SearchStateOption[]
+  optionsLabel?: string
+  totalOptionsCount?: number
+  noOptionsText?: string
+  onOptionSelect?: (value: string) => void
+  onTrailSelect?: (trailIndex: number) => void
+  showTabs?: boolean
+  tabs?: string[]
+  activeTab?: number
+  onTabChange?: (index: number) => void
 }
 
 interface SearchLayoutProps {
@@ -56,7 +69,13 @@ export function SearchLayout({
 
   const showBreadcrumbPanel = Boolean(breadcrumbPanelProps)
   const hasExternalSelectionTrail = selectionTrail !== undefined
-  const totalStatesCount = breadcrumbPanelProps?.totalStatesCount ?? 0
+  const panelOptions = breadcrumbPanelProps?.options ?? breadcrumbPanelProps?.stateOptions ?? []
+  const breadcrumbTabs = breadcrumbPanelProps?.tabs ?? ['Administrative', 'Departmental']
+  const panelOptionsLabel = breadcrumbPanelProps?.optionsLabel ?? 'States'
+  const panelOptionsCount =
+    breadcrumbPanelProps?.totalOptionsCount ?? breadcrumbPanelProps?.totalStatesCount ?? 0
+  const noOptionsText =
+    breadcrumbPanelProps?.noOptionsText ?? `No ${panelOptionsLabel.toLowerCase()} found`
   const inputValue = inputProps?.value !== undefined ? String(inputProps.value ?? '') : searchValue
   const selectedState = useMemo(
     () => breadcrumbPanelProps?.stateOptions.find((option) => option.value === selectedStateValue),
@@ -69,21 +88,18 @@ export function SearchLayout({
 
     return selectedState ? [selectedState.label] : []
   }, [hasExternalSelectionTrail, selectionTrail, selectedState])
-  const selectedStateLabel = effectiveSelectionTrail[0]
   const filteredStateOptions = useMemo(() => {
-    if (!breadcrumbPanelProps) {
+    if (!panelOptions.length) {
       return []
     }
 
     const query = inputValue.trim().toLowerCase()
     if (!query) {
-      return breadcrumbPanelProps.stateOptions
+      return panelOptions
     }
 
-    return breadcrumbPanelProps.stateOptions.filter((option) =>
-      option.label.toLowerCase().includes(query)
-    )
-  }, [breadcrumbPanelProps, inputValue])
+    return panelOptions.filter((option) => option.label.toLowerCase().includes(query))
+  }, [panelOptions, inputValue])
 
   useOutsideClick({
     ref: panelContainerRef,
@@ -108,8 +124,14 @@ export function SearchLayout({
 
   const handleStateSelect = (stateValue: string) => {
     setSelectedStateValue(stateValue)
-    setIsBreadcrumbPanelOpen(false)
+    setSearchValue('')
+    breadcrumbPanelProps?.onOptionSelect?.(stateValue)
     breadcrumbPanelProps?.onStateSelect?.(stateValue)
+  }
+
+  const handleTrailSelect = (trailIndex: number) => {
+    setSearchValue('')
+    breadcrumbPanelProps?.onTrailSelect?.(trailIndex)
   }
 
   return (
@@ -232,29 +254,76 @@ export function SearchLayout({
           overflowY="auto"
           boxShadow="0px 8px 24px rgba(0, 0, 0, 0.08)"
         >
-          <Box bg="neutral.100" borderTopRadius="12px" px="16px" py="8px">
+          {breadcrumbPanelProps?.showTabs ? (
+            <Box px="16px" py="8px" data-testid="search-dropdown-tabs">
+              <Tabs
+                index={breadcrumbPanelProps.activeTab}
+                onChange={breadcrumbPanelProps.onTabChange}
+              >
+                <TabList w="fit-content" borderBottomWidth="0">
+                  {breadcrumbTabs.map((tab) => (
+                    <Tab
+                      key={tab}
+                      py="4px"
+                      color="neutral.400"
+                      borderBottomWidth="2px"
+                      width="128px"
+                      height="30px"
+                      borderColor="neutral.200"
+                      _selected={{ color: 'primary.500', borderColor: 'primary.500' }}
+                    >
+                      <Text textStyle="h10" color="inherit">
+                        {tab}
+                      </Text>
+                    </Tab>
+                  ))}
+                </TabList>
+              </Tabs>
+            </Box>
+          ) : null}
+          <Box bg="neutral.100" px="16px" py="8px">
             <Flex align="center">
-              <Text textStyle="bodyText4" color="neutral.500" fontWeight="400px">
+              <Button
+                variant="unstyled"
+                onClick={() => handleTrailSelect(-1)}
+                h="auto"
+                minH="auto"
+                textStyle="bodyText4"
+                color="neutral.500"
+                fontWeight="400"
+                aria-label="Breadcrumb: All States/UTs"
+              >
                 All States/UTs
-              </Text>
-              {selectedStateLabel ? (
-                <>
+              </Button>
+              {effectiveSelectionTrail.map((item, index) => (
+                <Flex key={`${item}-${index}`} align="center">
                   <Icon
                     as={FiChevronDown}
                     color="neutral.500"
                     boxSize="20px"
                     transform="rotate(-90deg)"
                   />
-                  <Text textStyle="bodyText4" color="neutral.800" fontWeight="400px">
-                    {selectedStateLabel}
-                  </Text>
-                </>
-              ) : null}
+                  <Button
+                    variant="unstyled"
+                    onClick={() => handleTrailSelect(index)}
+                    h="auto"
+                    minH="auto"
+                    textStyle="bodyText4"
+                    color={
+                      index === effectiveSelectionTrail.length - 1 ? 'neutral.800' : 'neutral.500'
+                    }
+                    fontWeight="400"
+                    aria-label={`Breadcrumb: ${item}`}
+                  >
+                    {item}
+                  </Button>
+                </Flex>
+              ))}
             </Flex>
           </Box>
           <Box px="16px" mt="12px">
             <Text textStyle="bodyText5" fontWeight="500" color="neutral.950" mb="8px">
-              States ({totalStatesCount})
+              {panelOptionsLabel} ({panelOptionsCount})
             </Text>
             <Flex direction="column" gap="8px">
               {filteredStateOptions.map((state) => (
@@ -277,7 +346,7 @@ export function SearchLayout({
               ))}
               {filteredStateOptions.length === 0 ? (
                 <Text fontSize="14px" color="neutral.300">
-                  No states found
+                  {noOptionsText}
                 </Text>
               ) : null}
             </Flex>

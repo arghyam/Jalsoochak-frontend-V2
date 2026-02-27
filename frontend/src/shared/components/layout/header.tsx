@@ -3,7 +3,7 @@ import jalsoochakLogo from '@/assets/media/jalsoochak-logo.svg'
 
 export function Header() {
   return (
-    <Flex as="header" borderBottomWidth="1px" bg="white" boxShadow="sm" mb="32px">
+    <Flex as="header" borderBottomWidth="1px" bg="white" boxShadow="sm" mb="28px">
       <Flex
         w="full"
         maxW="100%"

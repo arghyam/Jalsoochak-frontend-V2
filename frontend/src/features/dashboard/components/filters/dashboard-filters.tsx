@@ -102,6 +102,77 @@ export function DashboardFilters({
     findLabel(selectedGramPanchayat, gramPanchayatOptions),
     findLabel(selectedVillage, villageOptions),
   ].filter((item): item is string => Boolean(item))
+  const hasSelectedState = Boolean(selectedState)
+  const hasSelectedDistrict = Boolean(selectedDistrict)
+  const hasSelectedBlock = Boolean(selectedBlock)
+  const hasSelectedGramPanchayat = Boolean(selectedGramPanchayat)
+  const breadcrumbPanelConfig = hasSelectedGramPanchayat
+    ? {
+        options: villageOptions,
+        label: 'Villages',
+        totalCount: villageOptions.length,
+        noOptionsText: 'No villages found',
+        onSelect: setSelectedVillage,
+      }
+    : hasSelectedBlock
+      ? {
+          options: gramPanchayatOptions,
+          label: 'Gram Panchayats',
+          totalCount: gramPanchayatOptions.length,
+          noOptionsText: 'No gram panchayats found',
+          onSelect: onGramPanchayatChange,
+        }
+      : hasSelectedDistrict
+        ? {
+            options: blockOptions,
+            label: 'Blocks',
+            totalCount: blockOptions.length,
+            noOptionsText: 'No blocks found',
+            onSelect: onBlockChange,
+          }
+        : hasSelectedState
+          ? {
+              options: districtOptions,
+              label: 'Districts',
+              totalCount: districtOptions.length,
+              noOptionsText: 'No districts found',
+              onSelect: onDistrictChange,
+            }
+          : {
+              options: breadcrumbStateOptions,
+              label: 'States',
+              totalCount: totalStatesCount,
+              noOptionsText: 'No states found',
+              onSelect: onStateChange,
+            }
+
+  const trailSelectionValues = [
+    selectedState,
+    selectedDistrict,
+    selectedBlock,
+    selectedGramPanchayat,
+    selectedVillage,
+  ] as const
+  const trailSelectionHandlers = [
+    onStateChange,
+    onDistrictChange,
+    onBlockChange,
+    onGramPanchayatChange,
+    setSelectedVillage,
+  ] as const
+
+  const handleTrailSelect = (trailIndex: number) => {
+    if (trailIndex < 0) {
+      onStateChange('')
+      return
+    }
+
+    const selectedValue = trailSelectionValues[trailIndex]
+    const handleSelection = trailSelectionHandlers[trailIndex]
+    if (selectedValue && handleSelection) {
+      handleSelection(selectedValue)
+    }
+  }
 
   return (
     <>
@@ -110,7 +181,15 @@ export function DashboardFilters({
         breadcrumbPanelProps={{
           stateOptions: breadcrumbStateOptions,
           totalStatesCount,
-          onStateSelect: onStateChange,
+          options: breadcrumbPanelConfig.options,
+          optionsLabel: breadcrumbPanelConfig.label,
+          totalOptionsCount: breadcrumbPanelConfig.totalCount,
+          noOptionsText: breadcrumbPanelConfig.noOptionsText,
+          onOptionSelect: breadcrumbPanelConfig.onSelect,
+          onTrailSelect: handleTrailSelect,
+          showTabs: hasSelectedState,
+          activeTab: filterTabIndex,
+          onTabChange,
         }}
         filterSlot={
           <Flex align="center" gap={3} wrap="wrap">
@@ -122,8 +201,8 @@ export function DashboardFilters({
               height="32px"
               borderRadius="4px"
               fontSize="sm"
-              textColor="neutral.300"
-              borderColor="neutral.300"
+              textColor="neutral.400"
+              borderColor="neutral.400"
               disabled={false}
               isFilter={true}
             />

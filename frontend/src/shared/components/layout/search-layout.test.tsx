@@ -35,9 +35,6 @@ describe('SearchLayout', () => {
     expect(screen.getByText('All States/UTs')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'Telangana' }))
-    expect(screen.queryByText('States (36)')).toBeNull()
-
-    fireEvent.focus(searchInput)
     expect(screen.getByText('All States/UTs')).toBeTruthy()
     expect(screen.getAllByText('Telangana').length).toBeGreaterThan(0)
   })
@@ -65,6 +62,9 @@ describe('SearchLayout', () => {
     )
     fireEvent.focus(searchInput)
     fireEvent.click(screen.getByRole('button', { name: 'Telangana' }))
+    fireEvent.mouseDown(document.body)
+    fireEvent.mouseUp(document.body)
+    fireEvent.click(document.body)
 
     expect(screen.queryByRole('button', { name: 'Telangana' })).toBeNull()
   })
@@ -90,6 +90,11 @@ describe('SearchLayout', () => {
     expect(screen.queryByRole('button', { name: 'Sangareddy' })).toBeNull()
 
     fireEvent.click(screen.getByRole('button', { name: 'Telangana' }))
+    expect(screen.queryByRole('button', { name: 'Sangareddy' })).toBeNull()
+
+    fireEvent.mouseDown(document.body)
+    fireEvent.mouseUp(document.body)
+    fireEvent.click(document.body)
     expect(screen.getByRole('button', { name: 'Sangareddy' })).toBeTruthy()
   })
 })
