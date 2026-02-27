@@ -15,44 +15,29 @@ import {
 import { useTranslation } from 'react-i18next'
 import { SearchIcon, EditIcon } from '@chakra-ui/icons'
 import { FiEye } from 'react-icons/fi'
-import { IoAddOutline } from 'react-icons/io5'
+import { FiDownload } from 'react-icons/fi'
 import { DataTable, type DataTableColumn, StatusChip } from '@/shared/components/common'
-import type { StateUT } from '../../types/states-uts'
+import type { StateAdmin } from '../../types/state-admins'
 import { ROUTES } from '@/shared/constants/routes'
-import { useStatesUTsQuery } from '../../services/query/use-super-admin-queries'
+import { useStateAdminsQuery } from '../../services/query/use-super-admin-queries'
 
-export function StatesUTsPage() {
+export function ManageStateAdminsPage() {
   const { t } = useTranslation(['super-admin', 'common'])
   const navigate = useNavigate()
-  const { data: states = [], isLoading, isError, refetch } = useStatesUTsQuery()
+  const { data: admins = [], isLoading, isError, refetch } = useStateAdminsQuery()
   const [searchQuery, setSearchQuery] = useState('')
 
-  // Responsive values
-  const showAddButtonText = useBreakpointValue({ base: false, sm: true }) ?? true
+  const showDownloadButtonText = useBreakpointValue({ base: false, sm: true }) ?? true
 
   useEffect(() => {
-    document.title = `${t('statesUts.title')} | JalSoochak`
+    document.title = `${t('manageStateAdmins.title')} | JalSoochak`
   }, [t])
-
-  const formatTimestamp = (date: Date): string => {
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const year = date.getFullYear()
-    let hours = date.getHours()
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    const ampm = hours >= 12 ? 'pm' : 'am'
-
-    hours = hours % 12
-    hours = hours ? hours : 12
-
-    return `${day}-${month}-${year}, ${hours}:${minutes}${ampm}`
-  }
 
   if (isError) {
     return (
       <Box w="full">
         <Heading as="h1" size={{ base: 'h2', md: 'h1' }} mb={5}>
-          {t('statesUts.title')}
+          {t('manageStateAdmins.title')}
         </Heading>
         <Flex h="64" align="center" justify="center" direction="column" gap={4} role="alert">
           <Text color="error.500">{t('common:toast.failedToLoad')}</Text>
@@ -64,71 +49,91 @@ export function StatesUTsPage() {
     )
   }
 
-  const filteredStates = states.filter((state) =>
-    state.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredAdmins = admins.filter(
+    (admin) =>
+      admin.adminName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      admin.stateUt.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleAddNew = () => {
-    navigate(ROUTES.SUPER_ADMIN_STATES_UTS_ADD)
+  const handleView = (row: StateAdmin) => {
+    if (row.stateUtId) {
+      navigate(ROUTES.SUPER_ADMIN_STATES_UTS_VIEW.replace(':id', row.stateUtId))
+    }
   }
 
-  const handleView = (id: string) => {
-    navigate(ROUTES.SUPER_ADMIN_STATES_UTS_VIEW.replace(':id', id))
+  const handleEdit = (row: StateAdmin) => {
+    if (row.stateUtId) {
+      navigate(ROUTES.SUPER_ADMIN_STATES_UTS_EDIT.replace(':id', row.stateUtId))
+    }
   }
 
-  const handleEdit = (id: string) => {
-    navigate(ROUTES.SUPER_ADMIN_STATES_UTS_EDIT.replace(':id', id))
+  const handleDownloadReport = () => {
+    // No-op for now
   }
 
-  const columns: DataTableColumn<StateUT>[] = [
+  const columns: DataTableColumn<StateAdmin>[] = [
     {
-      key: 'name',
-      header: t('statesUts.table.stateUt'),
+      key: 'adminName',
+      header: t('manageStateAdmins.table.adminName'),
       sortable: false,
       render: (row) => (
         <Text textStyle="h10" fontWeight="400">
-          {row.name}
+          {row.adminName}
         </Text>
       ),
     },
     {
-      key: 'status',
-      header: t('statesUts.table.status'),
+      key: 'stateUt',
+      header: t('manageStateAdmins.table.stateUt'),
+      sortable: false,
+      render: (row) => (
+        <Text textStyle="h10" fontWeight="400">
+          {row.stateUt}
+        </Text>
+      ),
+    },
+    {
+      key: 'mobileNumber',
+      header: t('manageStateAdmins.table.mobileNumber'),
+      sortable: false,
+      render: (row) => (
+        <Text textStyle="h10" fontWeight="400">
+          {row.mobileNumber}
+        </Text>
+      ),
+    },
+    {
+      key: 'emailAddress',
+      header: t('manageStateAdmins.table.emailAddress'),
+      sortable: false,
+      render: (row) => (
+        <Text textStyle="h10" fontWeight="400">
+          {row.emailAddress}
+        </Text>
+      ),
+    },
+    {
+      key: 'signupStatus',
+      header: t('manageStateAdmins.table.signupStatus'),
       sortable: false,
       render: (row) => (
         <StatusChip
-          status={row.status}
-          label={row.status === 'active' ? t('common:status.active') : t('common:status.inactive')}
+          status={row.signupStatus}
+          label={
+            row.signupStatus === 'completed'
+              ? t('manageStateAdmins.status.completed')
+              : t('manageStateAdmins.status.pending')
+          }
         />
       ),
     },
     {
-      key: 'lastSyncDate',
-      header: t('statesUts.table.lastSyncDate'),
-      sortable: true,
-      render: (row) => (
-        <Text textStyle="h10" fontWeight="400">
-          {formatTimestamp(row.lastSyncDate)}
-        </Text>
-      ),
-    },
-    {
-      key: 'totalDistricts',
-      header: t('statesUts.table.totalDistricts'),
-      sortable: true,
-      render: (row) => (
-        <Text textStyle="h10" fontWeight="400">
-          {row.totalDistricts}
-        </Text>
-      ),
-    },
-    {
       key: 'actions',
-      header: t('statesUts.table.actions'),
+      header: t('manageStateAdmins.table.actions'),
       render: (row) => (
         <Flex gap={1}>
           <IconButton
-            aria-label={`${t('statesUts.aria.viewStateUt')} ${row.name}`}
+            aria-label={`${t('manageStateAdmins.aria.viewAdmin')} ${row.adminName}`}
             icon={<FiEye aria-hidden="true" size={20} />}
             variant="ghost"
             width={5}
@@ -136,11 +141,11 @@ export function StatesUTsPage() {
             height={5}
             color="neutral.950"
             fontWeight="400"
-            onClick={() => handleView(row.id)}
+            onClick={() => handleView(row)}
             _hover={{ color: 'primary.500', bg: 'transparent' }}
           />
           <IconButton
-            aria-label={`${t('statesUts.aria.editStateUt')} ${row.name}`}
+            aria-label={`${t('manageStateAdmins.aria.editAdmin')} ${row.adminName}`}
             icon={<EditIcon aria-hidden="true" w={5} h={5} />}
             variant="ghost"
             width={5}
@@ -148,7 +153,7 @@ export function StatesUTsPage() {
             height={5}
             color="neutral.950"
             fontWeight="400"
-            onClick={() => handleEdit(row.id)}
+            onClick={() => handleEdit(row)}
             _hover={{ color: 'primary.500', bg: 'transparent' }}
           />
         </Flex>
@@ -158,14 +163,12 @@ export function StatesUTsPage() {
 
   return (
     <Box w="full" maxW="100%" minW={0}>
-      {/* Page Header */}
       <Box mb={5}>
         <Heading as="h1" size={{ base: 'h2', md: 'h1' }}>
-          {t('statesUts.title')}
+          {t('manageStateAdmins.title')}
         </Heading>
       </Box>
 
-      {/* Search and Add Button */}
       <Flex
         justify="space-between"
         align="center"
@@ -188,7 +191,7 @@ export function StatesUTsPage() {
             placeholder={t('common:search')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            aria-label={t('statesUts.searchPlaceholder')}
+            aria-label={t('manageStateAdmins.searchPlaceholder')}
             bg="white"
             h={8}
             borderWidth="1px"
@@ -201,22 +204,21 @@ export function StatesUTsPage() {
           variant="secondary"
           size="sm"
           fontWeight="600"
-          onClick={handleAddNew}
+          onClick={handleDownloadReport}
           gap={1}
           w={{ base: 'full', md: '178px' }}
-          aria-label={t('statesUts.addNewStateUt')}
+          aria-label={t('manageStateAdmins.downloadReport')}
         >
-          <IoAddOutline size={24} aria-hidden="true" />
-          {showAddButtonText && t('statesUts.addNewStateUt')}
+          <FiDownload size={20} aria-hidden="true" />
+          {showDownloadButtonText && t('manageStateAdmins.downloadReport')}
         </Button>
       </Flex>
 
-      {/* Data Table */}
-      <DataTable<StateUT>
+      <DataTable<StateAdmin>
         columns={columns}
-        data={filteredStates}
+        data={filteredAdmins}
         getRowKey={(row) => row.id}
-        emptyMessage={t('statesUts.messages.noStatesFound')}
+        emptyMessage={t('manageStateAdmins.messages.noAdminsFound')}
         isLoading={isLoading}
         pagination={{
           enabled: true,

@@ -8,6 +8,7 @@ export const ROUTES = {
   SUPER_ADMIN_STATES_UTS_ADD: '/super-admin/states-uts/add',
   SUPER_ADMIN_STATES_UTS_VIEW: '/super-admin/states-uts/:id',
   SUPER_ADMIN_STATES_UTS_EDIT: '/super-admin/states-uts/:id/edit',
+  SUPER_ADMIN_MANAGE_ADMINS: '/super-admin/manage-admins',
   SUPER_ADMIN_API_CREDENTIALS: '/super-admin/api-credentials',
   SUPER_ADMIN_INGESTION_MONITOR: '/super-admin/ingestion-monitor',
   // State Admin routes
@@ -26,7 +27,11 @@ export const ROUTES = {
   LOGIN: '/login',
   LOGOUT: '/logout',
   SIGNUP: '/signup',
-  CREATE_PASSWORD: '/createpassword',
+  CREATE_PASSWORD: '/createpassword/:id',
   CREDENTIALS: '/credentials',
   RESET_PASSWORD: '/resetpassword',
 } as const
+
+export function createPasswordUrl(id: string): string {
+  return `/createpassword/${id}`
+}

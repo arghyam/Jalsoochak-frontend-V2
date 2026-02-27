@@ -9,6 +9,7 @@ import {
   AddStateUTPage,
   ViewStateUTPage,
   EditStateUTPage,
+  ManageStateAdminsPage,
   ApiCredentialsPage,
   IngestionMonitorPage,
 } from '@/features/super-admin'
@@ -142,6 +143,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.SUPER_ADMIN_STATES_UTS_EDIT,
         element: <EditStateUTPage />,
+      },
+      {
+        path: ROUTES.SUPER_ADMIN_MANAGE_ADMINS,
+        element: <ManageStateAdminsPage />,
       },
       {
         path: ROUTES.SUPER_ADMIN_API_CREDENTIALS,
