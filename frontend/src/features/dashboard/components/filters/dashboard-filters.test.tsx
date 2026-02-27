@@ -173,7 +173,7 @@ describe('DashboardFilters', () => {
 
     expect(screen.getByText('All States/UTs')).toBeTruthy()
     expect(screen.getAllByText('Telangana').length).toBeGreaterThan(0)
-    expect(screen.getAllByText('Sangareddy').length).toBeGreaterThan(1)
+    expect(screen.getAllByText('Sangareddy').length).toBeGreaterThan(0)
   })
 
   it('shows blocks in breadcrumb search panel when district is selected', () => {

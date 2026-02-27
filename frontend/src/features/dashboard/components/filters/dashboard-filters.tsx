@@ -1,8 +1,8 @@
 import type { Dispatch, SetStateAction } from 'react'
 import { Button, Flex, Text } from '@chakra-ui/react'
-import { DateRangePicker, SearchableSelect } from '@/shared/components/common'
+import { DateRangePicker } from '@/shared/components/common'
 import type { DateRange, SearchableSelectOption } from '@/shared/components/common'
-import { FilterLayout, SearchLayout } from '@/shared/components/layout'
+import { SearchLayout } from '@/shared/components/layout'
 import { useLocationSearchQuery } from '../../services/query/use-location-search-query'
 
 type DashboardFiltersProps = {
@@ -46,46 +46,29 @@ type DashboardFiltersProps = {
   setSelectedDepartmentVillage: Dispatch<SetStateAction<string>>
 }
 
-export function DashboardFilters({
-  filterTabIndex,
-  onTabChange,
-  onClear,
-  isAdvancedEnabled,
-  isDepartmentStateSelected,
-  emptyOptions,
-  selectedState,
-  selectedDistrict,
-  selectedBlock,
-  selectedGramPanchayat,
-  selectedVillage,
-  selectedScheme,
-  selectedDuration,
-  selectedDepartmentState,
-  selectedDepartmentZone,
-  selectedDepartmentCircle,
-  selectedDepartmentDivision,
-  selectedDepartmentSubdivision,
-  selectedDepartmentVillage,
-  districtOptions,
-  blockOptions,
-  gramPanchayatOptions,
-  villageOptions,
-  mockFilterStates,
-  mockFilterSchemes,
-  onStateChange,
-  onDistrictChange,
-  onBlockChange,
-  onGramPanchayatChange,
-  setSelectedVillage,
-  setSelectedScheme,
-  setSelectedDuration,
-  onDepartmentStateChange,
-  setSelectedDepartmentZone,
-  setSelectedDepartmentCircle,
-  setSelectedDepartmentDivision,
-  setSelectedDepartmentSubdivision,
-  setSelectedDepartmentVillage,
-}: DashboardFiltersProps) {
+export function DashboardFilters(props: DashboardFiltersProps) {
+  const {
+    filterTabIndex,
+    onTabChange,
+    onClear,
+    selectedState,
+    selectedDistrict,
+    selectedBlock,
+    selectedGramPanchayat,
+    selectedVillage,
+    selectedDuration,
+    districtOptions,
+    blockOptions,
+    gramPanchayatOptions,
+    villageOptions,
+    onStateChange,
+    onDistrictChange,
+    onBlockChange,
+    onGramPanchayatChange,
+    setSelectedVillage,
+    setSelectedDuration,
+  } = props
+
   const { data: locationSearchData } = useLocationSearchQuery()
   const breadcrumbStateOptions = locationSearchData?.states ?? [
     { value: 'telangana', label: 'Telangana' },
@@ -175,300 +158,48 @@ export function DashboardFilters({
   }
 
   return (
-    <>
-      <SearchLayout
-        selectionTrail={selectionTrail}
-        breadcrumbPanelProps={{
-          stateOptions: breadcrumbStateOptions,
-          totalStatesCount,
-          options: breadcrumbPanelConfig.options,
-          optionsLabel: breadcrumbPanelConfig.label,
-          totalOptionsCount: breadcrumbPanelConfig.totalCount,
-          noOptionsText: breadcrumbPanelConfig.noOptionsText,
-          onOptionSelect: breadcrumbPanelConfig.onSelect,
-          onTrailSelect: handleTrailSelect,
-          showTabs: hasSelectedState,
-          activeTab: filterTabIndex,
-          onTabChange,
-        }}
-        filterSlot={
-          <Flex align="center" gap={3} wrap="wrap">
-            <DateRangePicker
-              value={selectedDuration}
-              onChange={setSelectedDuration}
-              placeholder="Duration"
-              width="160px"
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor="neutral.400"
-              borderColor="neutral.400"
-              disabled={false}
-              isFilter={true}
-            />
-            <Button
-              variant="link"
-              size="sm"
-              onClick={onClear}
-              _hover={{ textDecoration: 'underline', textDecorationColor: 'neutral.300' }}
-            >
-              <Text textStyle="h10" fontWeight="600" color="neutral.300">
-                Clear all filters
-              </Text>
-            </Button>
-          </Flex>
-        }
-      />
-      <FilterLayout activeTab={filterTabIndex} onTabChange={onTabChange} rightSlot={<></>}>
-        {filterTabIndex === 0 ? (
-          <>
-            <SearchableSelect
-              options={mockFilterStates}
-              value={selectedState}
-              onChange={onStateChange}
-              placeholder="States/UTs"
-              required
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor="neutral.400"
-              borderColor="neutral.400"
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={districtOptions}
-              value={selectedDistrict}
-              onChange={onDistrictChange}
-              placeholder="District"
-              required
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor="neutral.400"
-              borderColor="neutral.400"
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={blockOptions}
-              value={selectedBlock}
-              onChange={onBlockChange}
-              placeholder="Block"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              borderColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              disabled={!isAdvancedEnabled}
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={gramPanchayatOptions}
-              value={selectedGramPanchayat}
-              onChange={onGramPanchayatChange}
-              placeholder="Gram Panchayat"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              borderColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              disabled={!isAdvancedEnabled}
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={villageOptions}
-              value={selectedVillage}
-              onChange={setSelectedVillage}
-              placeholder="Village"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              borderColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              disabled={!isAdvancedEnabled}
-              isFilter={true}
-            />
-
-            <SearchableSelect
-              options={mockFilterSchemes}
-              value={selectedScheme}
-              onChange={setSelectedScheme}
-              placeholder="Scheme"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              borderColor={isAdvancedEnabled ? 'neutral.400' : 'neutral.300'}
-              disabled={!isAdvancedEnabled}
-              isFilter={true}
-            />
-          </>
-        ) : (
-          <>
-            <SearchableSelect
-              options={mockFilterStates}
-              value={selectedDepartmentState}
-              onChange={onDepartmentStateChange}
-              placeholder="States/UTs"
-              required
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor="neutral.400"
-              borderColor="neutral.400"
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={emptyOptions}
-              value={selectedDepartmentZone}
-              onChange={setSelectedDepartmentZone}
-              placeholder="Zone"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              borderColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              disabled={!isDepartmentStateSelected}
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={emptyOptions}
-              value={selectedDepartmentCircle}
-              onChange={setSelectedDepartmentCircle}
-              placeholder="Circle"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              borderColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              disabled={!isDepartmentStateSelected}
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={emptyOptions}
-              value={selectedDepartmentDivision}
-              onChange={setSelectedDepartmentDivision}
-              placeholder="Division"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              borderColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              disabled={!isDepartmentStateSelected}
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={emptyOptions}
-              value={selectedDepartmentSubdivision}
-              onChange={setSelectedDepartmentSubdivision}
-              placeholder="Subdivision"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              borderColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              disabled={!isDepartmentStateSelected}
-              isFilter={true}
-            />
-            <SearchableSelect
-              options={emptyOptions}
-              value={selectedDepartmentVillage}
-              onChange={setSelectedDepartmentVillage}
-              placeholder="Village"
-              width={{
-                base: '100%',
-                sm: 'calc(50% - 12px)',
-                md: 'calc(33.333% - 12px)',
-                lg: 'calc(25% - 12px)',
-                xl: '162px',
-              }}
-              height="32px"
-              borderRadius="4px"
-              fontSize="sm"
-              textColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              borderColor={isDepartmentStateSelected ? 'neutral.400' : 'neutral.300'}
-              disabled={!isDepartmentStateSelected}
-              isFilter={true}
-            />
-          </>
-        )}
-      </FilterLayout>
-    </>
+    <SearchLayout
+      selectionTrail={selectionTrail}
+      breadcrumbPanelProps={{
+        stateOptions: breadcrumbStateOptions,
+        totalStatesCount,
+        options: breadcrumbPanelConfig.options,
+        optionsLabel: breadcrumbPanelConfig.label,
+        totalOptionsCount: breadcrumbPanelConfig.totalCount,
+        noOptionsText: breadcrumbPanelConfig.noOptionsText,
+        onOptionSelect: breadcrumbPanelConfig.onSelect,
+        onTrailSelect: handleTrailSelect,
+        showTabs: hasSelectedState,
+        activeTab: filterTabIndex,
+        onTabChange,
+      }}
+      filterSlot={
+        <Flex align="center" gap={3} wrap="wrap">
+          <DateRangePicker
+            value={selectedDuration}
+            onChange={setSelectedDuration}
+            placeholder="Duration"
+            width="160px"
+            height="32px"
+            borderRadius="4px"
+            fontSize="sm"
+            textColor="neutral.400"
+            borderColor="neutral.400"
+            disabled={false}
+            isFilter={true}
+          />
+          <Button
+            variant="link"
+            size="sm"
+            onClick={onClear}
+            _hover={{ textDecoration: 'underline', textDecorationColor: 'neutral.300' }}
+          >
+            <Text textStyle="h10" fontWeight="600" color="neutral.300">
+              Clear all filters
+            </Text>
+          </Button>
+        </Flex>
+      }
+    />
   )
 }

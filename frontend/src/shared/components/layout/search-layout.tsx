@@ -140,6 +140,7 @@ export function SearchLayout({
       w="full"
       borderRadius="12px"
       p="16px"
+      mb="24px"
       bg="neutral.25"
       border="0.5px solid"
       borderColor="neutral.200"
