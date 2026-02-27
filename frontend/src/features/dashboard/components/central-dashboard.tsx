@@ -7,7 +7,8 @@ import { DashboardBody } from './screens/dashboard-body'
 import { IndiaMapChart } from './charts'
 import { LoadingSpinner } from '@/shared/components/common'
 import { MdOutlineWaterDrop, MdArrowUpward, MdArrowDownward } from 'react-icons/md'
-import { AiOutlineHome, AiOutlineInfoCircle } from 'react-icons/ai'
+import { AiOutlineInfoCircle } from 'react-icons/ai'
+import { LuClock3 } from 'react-icons/lu'
 import waterTapIcon from '@/assets/media/water-tap_1822589 1.svg'
 import type { DateRange, SearchableSelectOption } from '@/shared/components/common'
 import type { EntityPerformance } from '../types'
@@ -338,24 +339,34 @@ export function CentralDashboard() {
 
   const coreMetrics = [
     {
-      label: 'Coverage',
-      value: '78.4%',
-      trend: { direction: 'up', text: '+0.5% vs last month' },
+      label: 'Quantity in MLD',
+      value: '36,20,012',
+      trend: { direction: 'down', text: '-3% vs last 30 days' },
+      icon: (
+        <Flex w="44px" h="44px" borderRadius="100px" bg="#E6F7EC" align="center" justify="center">
+          <Image src={waterTapIcon} alt="" boxSize="24px" />
+        </Flex>
+      ),
     },
     {
-      label: 'Continuity',
-      value: '94',
-      trend: { direction: 'down', text: '-1 vs last month' },
-    },
-    {
-      label: 'Quantity',
-      value: '78.4%',
+      label: 'Quantity in LPCD',
+      value: '55',
       trend: { direction: 'up', text: '+2 LPCD vs last month' },
+      icon: (
+        <Flex w="44px" h="44px" borderRadius="100px" bg="#EAF2FA" align="center" justify="center">
+          <Icon as={MdOutlineWaterDrop} boxSize="22px" color="#2E90FA" />
+        </Flex>
+      ),
     },
     {
       label: 'Regularity',
       value: '78.4%',
       trend: { direction: 'down', text: '-3% vs last month' },
+      icon: (
+        <Flex w="44px" h="44px" borderRadius="100px" bg="#FFF4CC" align="center" justify="center">
+          <Icon as={LuClock3} boxSize="22px" color="#CA8A04" />
+        </Flex>
+      ),
     },
   ] as const
   const villagePumpOperatorDetails = {
@@ -422,54 +433,15 @@ export function CentralDashboard() {
 
       {/* KPI Cards */}
       <Grid templateColumns={{ base: '1fr', lg: 'repeat(3, 1fr)' }} gap={4} mb={6}>
-        <KPICard
-          title="Number of schemes"
-          value={data.kpis.totalSchemes}
-          icon={
-            <Flex
-              w="48px"
-              h="48px"
-              borderRadius="100px"
-              bg="primary.25"
-              align="center"
-              justify="center"
-            >
-              <Icon as={MdOutlineWaterDrop} boxSize="28px" color="primary.500" />
-            </Flex>
-          }
-        />
-        <KPICard
-          title="Total Number of Rural Households"
-          value={data.kpis.totalRuralHouseholds}
-          icon={
-            <Flex
-              w="48px"
-              h="48px"
-              borderRadius="100px"
-              bg="#FFFBD7"
-              align="center"
-              justify="center"
-            >
-              <Icon as={AiOutlineHome} boxSize="28px" color="#CA8A04" />
-            </Flex>
-          }
-        />
-        <KPICard
-          title="Functional Household Tap Connection"
-          value={data.kpis.functionalTapConnections}
-          icon={
-            <Flex
-              w="48px"
-              h="48px"
-              borderRadius="100px"
-              bg="#E1FFEA"
-              align="center"
-              justify="center"
-            >
-              <Image src={waterTapIcon} alt="" boxSize="24px" />
-            </Flex>
-          }
-        />
+        {coreMetrics.map((metric) => (
+          <KPICard
+            key={metric.label}
+            title={metric.label}
+            value={metric.value}
+            icon={metric.icon}
+            trend={metric.trend}
+          />
+        ))}
       </Grid>
 
       {/* Map and Core Metrics */}
