@@ -7,6 +7,7 @@ import {
   getStateUTOptions,
   getMockApiCredentialsData,
   getMockIngestionMonitorData,
+  getMockStateAdminsData,
   getMockStatesUTsData,
   getMockSuperAdminOverviewData,
   getMockSystemRulesConfiguration,
@@ -32,6 +33,7 @@ import type {
 } from '../../types/states-uts'
 import type { CreateTenantInput, CreateTenantResponse } from '../../types/tenant'
 import type { SystemRulesConfiguration } from '../../types/system-rules'
+import type { StateAdmin } from '../../types/state-admins'
 
 export type SaveSystemRulesPayload = Omit<SystemRulesConfiguration, 'id'>
 export type IngestionMonitorFilters = {
@@ -50,6 +52,7 @@ type SuperAdminDataProvider = {
   generateApiKey: (stateId: string) => Promise<string>
   sendApiKey: (stateId: string) => Promise<{ success: boolean }>
   getStatesUTsData: () => Promise<StateUT[]>
+  getStateAdminsData: () => Promise<StateAdmin[]>
   getStateUTById: (id: string) => Promise<StateUT>
   createStateUT: (payload: CreateStateUTInput) => Promise<StateUT>
   updateStateUT: (id: string, payload: UpdateStateUTInput) => Promise<StateUT>
@@ -113,6 +116,10 @@ const httpProvider: SuperAdminDataProvider = {
     const response = await apiClient.get<StateUT[]>('/api/super-admin/states-uts')
     return response.data
   },
+  getStateAdminsData: async () => {
+    const response = await apiClient.get<StateAdmin[]>('/api/super-admin/state-admins')
+    return response.data
+  },
   getStateUTById: async (id) => {
     const response = await apiClient.get<StateUT>(`/api/super-admin/states-uts/${id}`)
     return response.data
@@ -173,6 +180,7 @@ const mockProvider: SuperAdminDataProvider = {
   generateApiKey: (stateId) => generateApiKey(stateId),
   sendApiKey: (stateId) => sendApiKey(stateId),
   getStatesUTsData: () => getMockStatesUTsData(),
+  getStateAdminsData: () => getMockStateAdminsData(),
   getStateUTById: (id) => getStateUTById(id),
   createStateUT: (payload) => createStateUT(payload),
   updateStateUT: (id, payload) => updateStateUT(id, payload),
@@ -199,6 +207,7 @@ export const superAdminApi = {
   generateApiKey: (stateId: string) => provider.generateApiKey(stateId),
   sendApiKey: (stateId: string) => provider.sendApiKey(stateId),
   getStatesUTsData: () => provider.getStatesUTsData(),
+  getStateAdminsData: () => provider.getStateAdminsData(),
   getStateUTById: (id: string) => provider.getStateUTById(id),
   createStateUT: (payload: CreateStateUTInput) => provider.createStateUT(payload),
   updateStateUT: (id: string, payload: UpdateStateUTInput) => provider.updateStateUT(id, payload),

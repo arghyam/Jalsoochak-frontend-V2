@@ -10,14 +10,20 @@ export interface IngestionDataPoint {
   failedIngestions: number
 }
 
-export interface Notification {
-  id: string
-  message: string
-  timestamp: Date
+export interface WaterSupplyOutageData {
+  /** State or district name shown on the X-axis under each bar. Prefer state for overview. */
+  district: string
+  /** When provided, used as the category label instead of district (e.g. state name). */
+  state?: string
+  electricityFailure: number
+  pipelineLeak: number
+  pumpFailure: number
+  valveIssue: number
+  sourceDrying: number
 }
 
 export interface SuperAdminOverviewData {
   stats: SuperAdminStats
   ingestionData: IngestionDataPoint[]
-  notifications: Notification[]
+  waterSupplyOutages: WaterSupplyOutageData[]
 }

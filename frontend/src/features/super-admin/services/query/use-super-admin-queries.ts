@@ -83,6 +83,13 @@ export function useStatesUTsQuery() {
   })
 }
 
+export function useStateAdminsQuery() {
+  return useQuery({
+    queryKey: superAdminQueryKeys.stateAdmins(),
+    queryFn: superAdminApi.getStateAdminsData,
+  })
+}
+
 export function useStateUTByIdQuery(id?: string) {
   return useQuery({
     queryKey: superAdminQueryKeys.stateUTById(id ?? ''),

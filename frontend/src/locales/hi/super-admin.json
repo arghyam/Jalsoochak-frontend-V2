@@ -10,9 +10,10 @@
     "charts": {
       "ingestionSuccessRate": "समय के साथ अंतर्ग्रहण सफलता दर",
       "successfulIngestions": "सफल अंतर्ग्रहण",
-      "failedIngestions": "विफल अंतर्ग्रहण"
-    },
-    "notifications": "सूचनाएं"
+      "failedIngestions": "विफल अंतर्ग्रहण",
+      "waterSupplyOutages": "जल आपूर्ति बाधाएं",
+      "select": "चुनें"
+    }
   },
 
   "systemRules": {
@@ -71,7 +72,8 @@
     },
     "statusSection": {
       "title": "स्थिति",
-      "activated": "सक्रिय"
+      "activated": "सक्रिय",
+      "stateUtStatus": "राज्य/केंद्र शासित प्रदेश की स्थिति"
     },
     "buttons": {
       "addAndSendLink": "राज्य जोड़ें और ईमेल द्वारा लिंक भेजें",
@@ -98,6 +100,31 @@
       "editStateUt": "राज्य/केंद्र शासित प्रदेश संपादित करें"
     },
     "searchPlaceholder": "राज्य/केंद्र शासित प्रदेश के नाम से खोजें"
+  },
+
+  "manageStateAdmins": {
+    "title": "राज्य/केंद्र शासित प्रदेश व्यवस्थापक प्रबंधित करें",
+    "searchPlaceholder": "राज्य/केंद्र शासित प्रदेश खोजें",
+    "downloadReport": "रिपोर्ट डाउनलोड करें",
+    "table": {
+      "adminName": "व्यवस्थापक का नाम",
+      "stateUt": "राज्य/केंद्र शासित प्रदेश",
+      "mobileNumber": "मोबाइल नंबर",
+      "emailAddress": "ईमेल पता",
+      "signupStatus": "साइनअप स्थिति",
+      "actions": "कार्रवाई"
+    },
+    "status": {
+      "completed": "पूर्ण",
+      "pending": "लंबित"
+    },
+    "messages": {
+      "noAdminsFound": "कोई व्यवस्थापक नहीं मिला"
+    },
+    "aria": {
+      "viewAdmin": "व्यवस्थापक देखें",
+      "editAdmin": "व्यवस्थापक संपादित करें"
+    }
   },
 
   "apiCredentials": {
